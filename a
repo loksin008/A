@@ -9,74 +9,8 @@ MAGENTA="\033[35m"
 CYAN="\033[36m"
 RESET="\033[0m"
 BLINK="\033[5m"
-BOLD="\033[1m"
 
-# Define moderate-sized numbers using ASCII art
-declare -A numbers
-numbers[0]=" █████  
-█     █ 
-█     █ 
-█     █ 
-█     █ 
-█     █ 
- █████  "
-numbers[1]="   █    
-   █    
-   █    
-   █    
-   █    
-   █    
-   █    "
-numbers[2]=" █████  
-      █ 
- █████  
- █      
- █      
- █████  "
-numbers[3]=" █████  
-      █ 
- █████  
-      █ 
-      █ 
- █████  "
-numbers[4]=" █     █ 
- █     █ 
- ███████ 
-      █   
-      █    
-      █    "
-numbers[5]=" █████  
- █      
- █████  
-      █ 
-      █ 
- █████  "
-numbers[6]=" █████  
- █      
- █████  
- █     █ 
- █     █ 
- █████  "
-numbers[7]=" █████  
-      █ 
-      █    
-     █    
-    █     
-   █      "
-numbers[8]=" █████  
- █     █ 
- █████  
- █     █ 
- █     █ 
- █████  "
-numbers[9]=" █████  
- █     █ 
- █████  
-      █ 
-      █ 
- █████  "
-
-# Function to display time with a blinking border and big bold numbers
+# Function to display time with a blinking border
 display_time() {
   # Get terminal size
   rows=$(tput lines)
@@ -84,9 +18,6 @@ display_time() {
 
   # Get current time
   current_time=$(date +"%T")
-  hours=$(echo $current_time | cut -d ':' -f 1)
-  minutes=$(echo $current_time | cut -d ':' -f 2)
-  seconds=$(echo $current_time | cut -d ':' -f 3)
 
   # Select random color for the time
   color=$((RANDOM % 6))
@@ -99,6 +30,10 @@ display_time() {
     5) COLOR=$CYAN ;;
   esac
 
+  # Calculate where to place the clock (centered)
+  start_row=$((rows / 2))
+  start_col=$(( (cols - ${#current_time}) / 2 ))
+
   # Create a blinking border using ANSI escape codes
   border_top=$(printf "%-${cols}s" " " | tr " " "-")
   border_bottom=$(printf "%-${cols}s" " " | tr " " "-")
@@ -107,31 +42,15 @@ display_time() {
 
   # Print the blinking border (top and bottom)
   echo -e "${BLINK}${border_top}${RESET}"
-
-  # Function to print a large number
-  print_large_number() {
-    local num=$1
-    for i in {0..5}; do
-      for j in $(echo "$num" | fold -w1); do
-        echo -n "${numbers[$j]}" | sed -n "$((i+1))p"
-        echo -n "   "
-      done
-      echo
-    done
-  }
-
-  # Print the time with large numbers (hours:minutes:seconds)
-  for i in {0..5}; do
-    if [[ $i == 0 ]]; then
-      print_large_number $hours
-    elif [[ $i == 1 ]]; then
-      print_large_number ":"
-    elif [[ $i == 2 ]]; then
-      print_large_number $minutes
-    elif [[ $i == 3 ]]; then
-      print_large_number ":"
-    elif [[ $i == 4 ]]; then
-      print_large_number $seconds
+  
+  # Print each row with left and right borders, including the centered time
+  for ((i=1; i<rows-1; i++)); do
+    if [[ $i == $start_row ]]; then
+      # Center the time with a border on the left and right
+      printf "%-${start_col}s${COLOR}${current_time}${RESET}%-$((cols-start_col-${#current_time}))s\n"
+    else
+      # Empty rows with borders
+      printf "|%-$((cols-2))s|\n"
     fi
   done
 
