@@ -1,20 +1,24 @@
 #!/bin/bash
 
-# Function to display time in color
+# Define colors
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+BLUE="\033[34m"
+MAGENTA="\033[35m"
+CYAN="\033[36m"
+RESET="\033[0m"
+
+# Function to clear the screen and display time
 display_time() {
-  # Get the current time in HH:MM:SS format
+  # Get terminal size
+  rows=$(tput lines)
+  cols=$(tput cols)
+
+  # Get current time
   current_time=$(date +"%T")
   
-  # ANSI color codes
-  RED="\033[31m"
-  GREEN="\033[32m"
-  YELLOW="\033[33m"
-  BLUE="\033[34m"
-  MAGENTA="\033[35m"
-  CYAN="\033[36m"
-  RESET="\033[0m"
-
-  # Choose random color for each digit (HH:MM:SS)
+  # Select random color
   color=$((RANDOM % 6))
   case $color in
     0) COLOR=$RED ;;
@@ -25,11 +29,16 @@ display_time() {
     5) COLOR=$CYAN ;;
   esac
 
-  # Print the time in the chosen color
+  # Calculate where to place the clock
+  start_row=$((rows / 2))
+  start_col=$(( (cols - ${#current_time}) / 2 ))
+
+  # Move the cursor to the center and display time
+  tput cup $start_row $start_col
   echo -e "${COLOR}${current_time}${RESET}"
 }
 
-# Infinite loop to keep updating the time
+# Infinite loop to update the time every second
 while true; do
   clear
   display_time
