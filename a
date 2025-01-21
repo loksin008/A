@@ -1,36 +1,64 @@
 #!/bin/bash
 
-# Set terminal to black background
-clear
-tput civis  # Hide cursor
+# Define colors
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+BLUE="\033[34m"
+MAGENTA="\033[35m"
+CYAN="\033[36m"
+RESET="\033[0m"
+BLINK="\033[5m"
 
-# Define star symbol and delay time
-STAR="*"
-DELAY=0.1
+# Function to display time with a blinking border
+display_time() {
+  # Get terminal size
+  rows=$(tput lines)
+  cols=$(tput cols)
 
-# Get terminal dimensions
-rows=$(tput lines)
-cols=$(tput cols)
+  # Get current time
+  current_time=$(date +"%T")
 
-# Infinite loop to display sparkling stars
+  # Select random color for the time
+  color=$((RANDOM % 6))
+  case $color in
+    0) COLOR=$RED ;;
+    1) COLOR=$GREEN ;;
+    2) COLOR=$YELLOW ;;
+    3) COLOR=$BLUE ;;
+    4) COLOR=$MAGENTA ;;
+    5) COLOR=$CYAN ;;
+  esac
+
+  # Calculate where to place the clock (centered)
+  start_row=$((rows / 2))
+  start_col=$(( (cols - ${#current_time}) / 2 ))
+
+  # Create a blinking border using ANSI escape codes
+  border_top=$(printf "%-${cols}s" " " | tr " " "-")
+  border_bottom=$(printf "%-${cols}s" " " | tr " " "-")
+
+  # Print the blinking border (top)
+  echo -e "${BLINK}${border_top}${RESET}"
+
+  # Print each row with left and right borders, including the centered time
+  for ((i=1; i<rows-1; i++)); do
+    if [[ $i == $start_row ]]; then
+      # Center the time with a border on the left and right
+      printf "|%-$((start_col-1))s${COLOR}${current_time}${RESET}%-$((cols-start_col-${#current_time}-1))s|\n"
+    else
+      # Empty rows with borders
+      printf "|%-$((cols-2))s|\n"
+    fi
+  done
+
+  # Print the blinking border (bottom)
+  echo -e "${BLINK}${border_bottom}${RESET}"
+}
+
+# Infinite loop to update the time every second
 while true; do
-  # Randomly choose a position in the terminal
-  rand_row=$((RANDOM % rows))
-  rand_col=$((RANDOM % cols))
-
-  # Move cursor to the random position
-  tput cup $rand_row $rand_col
-
-  # Print the star
-  echo -n "$STAR"
-
-  # Sleep for a small time to create the sparkling effect
-  sleep $DELAY
-
-  # Clear the screen (simulate star disappearing)
-  tput cup $rand_row $rand_col
-  echo -n " "
-
-  # Sleep again for the delay
-  sleep $DELAY
+  clear
+  display_time
+  sleep 1
 done
