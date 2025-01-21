@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Function to display time in color
+display_time() {
+  # Get the current time in HH:MM:SS format
+  current_time=$(date +"%T")
+  
+  # ANSI color codes
+  RED="\033[31m"
+  GREEN="\033[32m"
+  YELLOW="\033[33m"
+  BLUE="\033[34m"
+  MAGENTA="\033[35m"
+  CYAN="\033[36m"
+  RESET="\033[0m"
+
+  # Choose random color for each digit (HH:MM:SS)
+  color=$((RANDOM % 6))
+  case $color in
+    0) COLOR=$RED ;;
+    1) COLOR=$GREEN ;;
+    2) COLOR=$YELLOW ;;
+    3) COLOR=$BLUE ;;
+    4) COLOR=$MAGENTA ;;
+    5) COLOR=$CYAN ;;
+  esac
+
+  # Print the time in the chosen color
+  echo -e "${COLOR}${current_time}${RESET}"
+}
+
+# Infinite loop to keep updating the time
+while true; do
+  clear
+  display_time
+  sleep 1
+done
