@@ -11,70 +11,70 @@ RESET="\033[0m"
 BLINK="\033[5m"
 BOLD="\033[1m"
 
-# Define large numbers using ASCII art
+# Define moderate-sized numbers using ASCII art
 declare -A numbers
-numbers[0]="  ██████  
- █      █
- █      █
- █      █
- █      █
- █      █
-  ██████  "
-numbers[1]="    █    
-    █    
-    █    
-    █    
-    █    
-    █    
-    █    "
-numbers[2]="  ██████  
+numbers[0]=" █████  
+█     █ 
+█     █ 
+█     █ 
+█     █ 
+█     █ 
+ █████  "
+numbers[1]="   █    
+   █    
+   █    
+   █    
+   █    
+   █    
+   █    "
+numbers[2]=" █████  
+      █ 
+ █████  
+ █      
+ █      
+ █████  "
+numbers[3]=" █████  
+      █ 
+ █████  
+      █ 
+      █ 
+ █████  "
+numbers[4]=" █     █ 
+ █     █ 
+ ███████ 
       █   
-  ██████  
-  █       
-  █       
-  ██████  "
-numbers[3]="  ██████  
-      █   
-  ██████  
-      █   
-      █   
-  ██████  "
-numbers[4]="  █     █ 
-  █     █ 
-  ██████  
-      █   
-      █   
+      █    
       █    "
-numbers[5]="  ██████  
-  █       
-  ██████  
-      █   
-      █   
-  ██████  "
-numbers[6]="  ██████  
-  █       
-  ██████  
-  █     █ 
-  █     █ 
-  ██████  "
-numbers[7]="  ██████  
-      █   
-      █   
-      █   
-      █   
-      █    "
-numbers[8]="  ██████  
-  █     █ 
-  ██████  
-  █     █ 
-  █     █ 
-  ██████  "
-numbers[9]="  ██████  
-  █     █ 
-  ██████  
-      █   
-      █   
-  ██████  "
+numbers[5]=" █████  
+ █      
+ █████  
+      █ 
+      █ 
+ █████  "
+numbers[6]=" █████  
+ █      
+ █████  
+ █     █ 
+ █     █ 
+ █████  "
+numbers[7]=" █████  
+      █ 
+      █    
+     █    
+    █     
+   █      "
+numbers[8]=" █████  
+ █     █ 
+ █████  
+ █     █ 
+ █     █ 
+ █████  "
+numbers[9]=" █████  
+ █     █ 
+ █████  
+      █ 
+      █ 
+ █████  "
 
 # Function to display time with a blinking border and big bold numbers
 display_time() {
@@ -107,14 +107,14 @@ display_time() {
 
   # Print the blinking border (top and bottom)
   echo -e "${BLINK}${border_top}${RESET}"
-  
+
   # Function to print a large number
   print_large_number() {
     local num=$1
     for i in {0..5}; do
       for j in $(echo "$num" | fold -w1); do
         echo -n "${numbers[$j]}" | sed -n "$((i+1))p"
-        echo -n "    "
+        echo -n "   "
       done
       echo
     done
