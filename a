@@ -10,7 +10,7 @@ CYAN="\033[36m"
 RESET="\033[0m"
 BLINK="\033[5m"
 
-# Function to display time with a blinking border
+# Function to display time with a blinking border and speak it
 display_time() {
   # Get terminal size
   rows=$(tput lines)
@@ -54,6 +54,9 @@ display_time() {
 
   # Print the blinking border (bottom)
   echo -e "${BLINK}${border_bottom}${RESET}"
+
+  # Speak the time using espeak or spd-say
+  espeak "The time is $current_time"
 }
 
 # Infinite loop to update the time every second
